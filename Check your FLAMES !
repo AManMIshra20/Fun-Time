@@ -1,0 +1,171 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+struct cr
+{
+        char data;
+        struct cr *next, *prev;
+}s1,*node,*start,*end,*temp;
+
+int count=0,run;
+int bl,gl;
+char boy[50],girl[50];
+
+void construct()
+{
+        start=NULL;node=NULL;end=NULL;
+}
+void inserte()
+{
+        char x;
+
+        switch(count)
+        {
+                case 0: x='F';
+                        break;
+                case 1: x='L';
+                        break;
+                case 2: x='A';
+                        break;
+                case 3: x='M';
+                        break;
+                case 4: x='E';
+                        break;
+                case 5: x='S';
+                        break;
+        }
+
+
+        count++;
+        node=(struct cr *)malloc(sizeof(s1));
+        node->data=x;
+        if(start==NULL)
+        {
+                start=node;
+                start->next=start;
+                start->prev=start;
+                end=node;
+        }
+        else
+        {
+                node->next=start;
+                end->next=node;
+                node->prev=end;
+                start->prev=node;
+                end=node;
+        }
+}
+
+void deletecurr()
+{
+
+        temp=node;
+        temp->prev->next=node->next;
+        temp->next->prev=node->prev;
+        node=temp->next;
+        if(temp==start) start=node;
+        else if(temp==end) end=temp->prev;        
+        free(temp);
+}
+
+void trav()
+{
+        node=node->next;
+}
+
+void display()
+{
+        int i;
+        if(start==NULL)
+                printf("\nQueue underflow!\n");
+        else
+        {
+                printf("\nThe elements are:\n");
+                for(node=start,i=0;i<count;i++,node=node->next)
+                        printf("%c ",node->data);
+        }
+}
+
+char flamecut(int number)
+{
+        
+        run=count;
+        
+        while(run>1)
+        {        
+                for(int x=1;x<number;x++)
+                        trav();
+                deletecurr();
+                
+                run--;
+        }
+        return node->data;
+}
+
+void delete(char ch)
+{
+        for(int i=0;i<bl;i++)
+                if(ch==boy[i] || ch==boy[i]+32 ||ch==boy[i]-32)
+                        boy[i]=' ';
+        for(int i=0;i<gl;i++)
+                if(ch==girl[i] || ch==girl[i]+32 || ch==girl[i]-32)
+                        girl[i]=' ';
+
+}
+
+int cutnames()
+{
+        int countn=0,x;
+        printf("\nEnter the boy name : ");
+        gets(boy);
+        bl=strlen(boy);
+        printf("Enter the girl name : ");
+        gets(girl);
+        gl=strlen(girl);
+        for(int i=0;i<bl;i++)
+                for(int j=0;j<gl;j++)
+                {
+                        if((boy[i]==girl[j] || boy[i]==girl[i]+32 ||boy[i]==girl[i]-32) && boy[i]!=' ')
+                                delete(boy[i]);
+                }
+        for(x=0;x<bl;x++)
+                if((boy[x]>='a' && boy[x]<='z')||(boy[x]>='A' && boy[x]<='Z')) countn++;
+        for(x=0;x<gl;x++)
+                if((girl[x]>='a' && girl[x]<='z')||(girl[x]>='A' && girl[x]<='Z')) countn++;
+        printf("\nRemaining letters:");        
+        printf("\n%s\n%s",boy,girl);
+        //printf("\nCount= %d",count);
+        return countn;
+}
+
+
+int main()
+{
+        int ch;
+        char flame;
+        construct();
+        while(count<6)
+        {
+                inserte(); 
+        }
+        run=count;
+        display();
+        int num=cutnames();
+        printf("\nNon Common letters=%d",num);
+        node=start;
+        flame=flamecut(num);
+        printf("\n\nYour Result: ");
+        switch(flame)
+        {
+
+                case 'F': printf("Just Friends"); break;
+                case 'L': printf("A Lover"); break;
+                case 'A': printf("Its just Affection"); break;
+                case 'M': printf("You will get Married"); break;
+                case 'E': printf("You are Enemies"); break;
+                case 'S': printf("LOL! Brother & Sister"); break;
+        }
+        printf("\n");
+        return 0;
+
+}
